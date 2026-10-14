@@ -17,6 +17,7 @@ export function saberi(paket) {
     duplikata: s.duplikata,
     grupaDuplikata: s.grupaDuplikata,
     konflikata: s.konflikata,
+    osetljivih: s.osetljivih ?? 0,
     fresh: s.svezina.fresh,
     stale: s.svezina.stale,
     expired: s.svezina.expired,
@@ -45,7 +46,7 @@ export function rizik(s) {
 /** Rečenica za upravu (jedna, mjerljiva). */
 export function recenica(r) {
   return `${r.izvora} izvora znanja: ${r.duplikata} duplikata (${r.grupaDuplikata} grupa), ` +
-    `${r.konflikata} konflikata (traži čovjeka), ${r.procenatPreko90}% starije od 90 dana, ` +
+    `${r.konflikata} konflikata (traži čovjeka), ${r.osetljivih} osetljivih (PII, redigovano), ${r.procenatPreko90}% starije od 90 dana, ` +
     `${r.expired} isteklo i ${r.bezDatuma} bez datuma. Rizik: **${r.rizik.nivo}** (${r.rizik.bodovi} bodova). ` +
     `U paket je ušlo ${r.chunkova} chunkova sa citatom i hashom, ${r.izbaceno} izvora izbačeno sa razlogom.`;
 }
@@ -77,10 +78,10 @@ export function napisiIzvestaj(paket, dir) {
     ...(paket.izbaceno.length ? paket.izbaceno.slice(0, 30).map((x) => `- \`${x.id}\` — ${x.razlog}`) : ['- ništa nije izbačeno']), '',
   ].join('\n');
   const json = JSON.stringify({ datum, ...r }, null, 1);
-  fs.writeFileSync(path.join(dir, `report-${datum}.md`), md, 'utf8');
-  fs.writeFileSync(path.join(dir, `report-${datum}.json`), json, 'utf8');
-  fs.writeFileSync(path.join(dir, `report-${datum}.md.sha256`), `${crypto.createHash('sha256').update(md).digest('hex')}  report-${datum}.md\n`, 'utf8');
-  return { md: path.join(dir, `report-${datum}.md`), json: path.join(dir, `report-${datum}.json`), sabrano: r };
+  fs.writeFileSync(path.join(dir, `knowledge-${datum}.md`), md, 'utf8');
+  fs.writeFileSync(path.join(dir, `knowledge-${datum}.json`), json, 'utf8');
+  fs.writeFileSync(path.join(dir, `knowledge-${datum}.md.sha256`), `${crypto.createHash('sha256').update(md).digest('hex')}  report-${datum}.md\n`, 'utf8');
+  return { md: path.join(dir, `knowledge-${datum}.md`), json: path.join(dir, `knowledge-${datum}.json`), sabrano: r };
 }
 
 // CLI: node src/report.js --paket packs/pack.json

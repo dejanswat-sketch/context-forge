@@ -144,3 +144,25 @@ They caught two real bugs while this was built:
 ## License
 
 MIT — see `LICENSE`.
+
+---
+
+## v1.0.0 — scenarios, question ranking, PII (dodato 14.10.2026)
+
+| Novo | Šta radi | Dokaz |
+|---|---|---|
+| `scenarios/knowledge.json` | **7 scenarija kao PODACI** + taksonomija (`duplikat`, `konflikt`, `zastarelo`, `bez-vlasnika`, `bez-izvora`, `osetljivo`, `sveze`) | `node src/scenarios.js` → **7/7** + `reports/knowledge-scenarios-<dan>.md` |
+| rangiranje po pitanju | `packer(prov, { pitanje: 'koja je cena refund-a?' })` → `match` po chunku, sort `0.6*svežina + 0.4*poklapanje` | `examples/pack.js` sekcija 3 (isto znanje, drugačiji redosled) |
+| **PII u toku** | `src/sensitive.js`: JMBG, IBAN, kartica, telefon, email, tajne, lozinke → `flag: osetljivo`, nalaz **redigovan**, izvor **nikad u paket** | scenario S6 + `test/sensitive.test.js` (6 testova) |
+| normalizacija za poklapanje | „cena" nalazi „cijena" (dijakritika + `ije→e`) | `test/index.test.js` |
+| `src/index.js` (façade) | `ingestor / deduper / freshness / packer` u 4 linije koda | `examples/pack.js` sekcija 4 |
+| demo na **folderu** | `data/knowledge/` (5 fajlova: svež, istekao ×2, bez vlasnika, PII) | `examples/pack.js` sekcija 1 |
+| „nema tihog izbacivanja" | izvor koji ne da nijedan chunk dobija razlog u `izbaceno` | `test/index.test.js` |
+
+**Testovi: 50/50** · `npm test` ~1 s · tok `node examples/pack.js` **0,15 s** · i dalje **0 zavisnosti**.
+
+### Šta je v1.0.0 otkrilo o sebi (nalazi iz rada, ne iz želje)
+1. **Datum iz zaglavlja je bio pregažen mtime-om** — dokument je tvrdio 2023, mašina ga čitala kao svjež. Sada tekst ima prednost (`dateSource: text`).
+2. **Prekratak izvor je tiho nestajao** (ispod `minChunkChars`) — kršenje osnovnog pravila; sada svaki izlaz ima razlog, a prag je 20 znakova.
+3. **„cena" nije nalazilo „cijena"** — pitanje je vraćalo prazan paket; dodata je normalizacija (dijakritika + `ije→e`).
+4. **Scenario S1 je tražio svjež kanonski izvor, a fiksura je bila stara** — dokaz da runner ne daje pečat nego provjerava.

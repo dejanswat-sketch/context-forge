@@ -1,0 +1,73 @@
+{
+  "_comment": "7 scenarija kao PODACI + taksonomija. Scenariji se GENERISU iz taksonomije, pa nikad ne 'fali 2'. Pokrece ih `node src/scenarios.js`.",
+  "verzija": "1.0",
+  "taksonomija": ["duplikat", "konflikt", "zastarelo", "bez-vlasnika", "bez-izvora", "osetljivo", "sveze"],
+  "scenariji": [
+    {
+      "id": "S1-duplikat",
+      "naziv": "Isti tekst na tri mjesta — ostaje jedan",
+      "taksonomija": "duplikat",
+      "ulaz": [
+        { "id": "policy_2024.md", "tekst": "Refund do 1000€ dozvoljen\n\nvlasnik: finansije\ndatum: 2026-10-10", "owner": "finansije", "updatedAt": "2026-10-10" },
+        { "id": "policy_copy.md", "tekst": "Refund do 1000€ dozvoljen\n\nvlasnik: finansije\ndatum: 2026-10-10", "owner": "finansije", "updatedAt": "2026-10-10" },
+        { "id": "kopija/policy_copy2.md", "tekst": "Refund do 1000€ dozvoljen\n\nvlasnik: finansije\ndatum: 2026-10-10", "owner": "finansije", "updatedAt": "2026-10-10" }
+      ],
+      "ocekivano": { "duplikata": 2, "grupaDuplikata": 1, "chunkova": 1 }
+    },
+    {
+      "id": "S2-konflikt",
+      "naziv": "Ista cijena, dvije vrijednosti — čovjek odlučuje",
+      "taksonomija": "konflikt",
+      "ulaz": [
+        { "id": "policy_2024.md", "tekst": "Refund je 1000€ po pravilniku.", "owner": "finansije", "updatedAt": "2024-11-02", "facts": [{ "key": "refund:limit", "value": "1000" }] },
+        { "id": "cenovnik_2023.md", "tekst": "Refund je 1500€ po cenovniku.", "owner": "prodaja", "updatedAt": "2023-01-15", "facts": [{ "key": "refund:limit", "value": "1500" }] }
+      ],
+      "ocekivano": { "konflikata": 1, "konfliktniKljuc": "refund:limit", "chunkova": 0 }
+    },
+    {
+      "id": "S3-zastarelo",
+      "naziv": "Starije od TTL-a — ne ide u paket",
+      "taksonomija": "zastarelo",
+      "ulaz": [
+        { "id": "cenovnik_2023.md", "tekst": "Refund do 1500€ dozvoljen za sve klijente.", "owner": "prodaja", "updatedAt": "2023-01-15", "tip": "price" }
+      ],
+      "ocekivano": { "chunkova": 0, "izbacenoRazlog": "isteklo" }
+    },
+    {
+      "id": "S4-bez-vlasnika",
+      "naziv": "Nema vlasnika — rizik odgovornosti (ostaje, ali se prijavljuje)",
+      "taksonomija": "bez-vlasnika",
+      "ulaz": [
+        { "id": "interna_biljeska.md", "tekst": "Refund se odobrava ručno u izuzetnim slučajevima.", "owner": null, "updatedAt": "2026-10-01" }
+      ],
+      "ocekivano": { "bezVlasnika": 1, "chunkova": 1, "oznaka": "bez-vlasnika" }
+    },
+    {
+      "id": "S5-bez-izvora",
+      "naziv": "Nema izvora (nema citata) — ne može se dokazati poreklo",
+      "taksonomija": "bez-izvora",
+      "ulaz": [
+        { "id": null, "tekst": "Refund do 1000€ dozvoljen, izvor nepoznat.", "owner": "finansije", "updatedAt": "2026-10-01" }
+      ],
+      "ocekivano": { "chunkova": 0, "izbacenoRazlog": "nema izvora" }
+    },
+    {
+      "id": "S6-osetljivo",
+      "naziv": "PII u znanju — nikad u paket, samo redigovan nalaz",
+      "taksonomija": "osetljivo",
+      "ulaz": [
+        { "id": "kupci.md", "tekst": "Kupac Jovan Jovanović, JMBG 0101990712345, IBAN RS35260005601001611379, tel +381 64 123 4567, email jovan@primer.rs — refund odobren.", "owner": "podrska", "updatedAt": "2026-10-05" }
+      ],
+      "ocekivano": { "chunkova": 0, "oznaka": "osetljivo", "piiVrste": ["jmbg", "iban", "telefon", "email"] }
+    },
+    {
+      "id": "S7-sveze",
+      "naziv": "Sveže, sa vlasnikom, citatom i hashom — ulazi u paket",
+      "taksonomija": "sveze",
+      "ulaz": [
+        { "id": "policy_2026.md", "tekst": "Refund do 1000€ dozvoljen uz odobrenje finansija.", "owner": "finansije", "updatedAt": "2026-10-10" }
+      ],
+      "ocekivano": { "chunkova": 1, "minScore": 0.9, "imaCitat": true, "imaHash": true }
+    }
+  ]
+}

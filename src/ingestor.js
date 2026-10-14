@@ -41,16 +41,31 @@ export function normalizuj(tekst) {
   return String(tekst || '').replace(/\r\n/g, '\n').split('\n').map((l) => l.replace(/\s+/g, ' ').trim()).join('\n').replace(/\n{3,}/g, '\n\n').trim();
 }
 
+/** Datum iz zaglavlja teksta (`datum: 2024-11-02`), inače mtime fajla. Nikad se ne izmišlja. */
+export function procitajDatum(tekst, fallbackIso) {
+  const m = String(tekst || '').match(/datum\s*:\s*(\d{4}-\d{2}-\d{2})/i);
+  if (m) return { updatedAt: new Date(m[1] + 'T00:00:00Z').toISOString(), dateSource: 'text' };
+  return { updatedAt: fallbackIso || null, dateSource: fallbackIso ? 'file-mtime' : 'provided' };
+}
+
+/** Vlasnik iz zaglavlja teksta (`vlasnik: finansije`). Ako ga nema — polje ostaje prazno (i to je nalaz). */
+export function procitajVlasnika(tekst) {
+  const m = String(tekst || '').match(/vlasnik\s*:\s*([^\n\r]+)/i);
+  return m ? m[1].trim() : null;
+}
+
 /** Zaokruži sirov izvor u zapis sa hashom, veličinom i brojem riječi. */
 export function okvir(izvor) {
   const norm = normalizuj(izvor.tekst);
+  const d = procitajDatum(norm, izvor.updatedAt || null);
   return {
     id: izvor.id,
     put: izvor.put || null,
     tip: izvor.tip || 'docs',
-    owner: izvor.owner || null,
-    updatedAt: izvor.updatedAt || null,
-    dateSource: izvor.dateSource || 'provided',
+    owner: izvor.owner || procitajVlasnika(norm),
+    // Datum iz TEKSTA ima prednost nad mtime-om: dokument sam tvrdi kad je — a to je i dio dokaza.
+    updatedAt: d.dateSource === 'text' ? d.updatedAt : (izvor.updatedAt || d.updatedAt),
+    dateSource: d.dateSource === 'text' ? 'text' : (izvor.dateSource && izvor.dateSource !== 'provided' ? izvor.dateSource : d.dateSource),
     hash: hashTeksta(norm),
     bytes: Buffer.byteLength(norm, 'utf8'),
     words: norm.split(/\s+/).filter(Boolean).length,

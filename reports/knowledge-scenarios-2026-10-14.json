@@ -1,0 +1,71 @@
+{
+ "taksonomija": [
+  "duplikat",
+  "konflikt",
+  "zastarelo",
+  "bez-vlasnika",
+  "bez-izvora",
+  "osetljivo",
+  "sveze"
+ ],
+ "proslo": 7,
+ "ukupno": 7,
+ "rezultati": [
+  {
+   "id": "S1-duplikat",
+   "naziv": "Isti tekst na tri mjesta — ostaje jedan",
+   "taksonomija": "duplikat",
+   "prosao": true,
+   "greske": [],
+   "chunkova": 1
+  },
+  {
+   "id": "S2-konflikt",
+   "naziv": "Ista cijena, dvije vrijednosti — čovjek odlučuje",
+   "taksonomija": "konflikt",
+   "prosao": true,
+   "greske": [],
+   "chunkova": 0
+  },
+  {
+   "id": "S3-zastarelo",
+   "naziv": "Starije od TTL-a — ne ide u paket",
+   "taksonomija": "zastarelo",
+   "prosao": true,
+   "greske": [],
+   "chunkova": 0
+  },
+  {
+   "id": "S4-bez-vlasnika",
+   "naziv": "Nema vlasnika — rizik odgovornosti (ostaje, ali se prijavljuje)",
+   "taksonomija": "bez-vlasnika",
+   "prosao": true,
+   "greske": [],
+   "chunkova": 1
+  },
+  {
+   "id": "S5-bez-izvora",
+   "naziv": "Nema izvora (nema citata) — ne može se dokazati poreklo",
+   "taksonomija": "bez-izvora",
+   "prosao": true,
+   "greske": [],
+   "chunkova": 0
+  },
+  {
+   "id": "S6-osetljivo",
+   "naziv": "PII u znanju — nikad u paket, samo redigovan nalaz",
+   "taksonomija": "osetljivo",
+   "prosao": true,
+   "greske": [],
+   "chunkova": 0
+  },
+  {
+   "id": "S7-sveze",
+   "naziv": "Sveže, sa vlasnikom, citatom i hashom — ulazi u paket",
+   "taksonomija": "sveze",
+   "prosao": true,
+   "greske": [],
+   "chunkova": 1
+  }
+ ]
+}

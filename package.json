@@ -1,6 +1,6 @@
 {
   "name": "context-forge",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Package knowledge for AI agents with proof of freshness: ingest, dedupe, detect conflicts, score freshness, emit RAG packs with citations and SHA-256 provenance. No dependencies.",
   "type": "module",
   "main": "src/packer.js",
@@ -15,7 +15,8 @@
   "scripts": {
     "test": "node --test \"test/*.test.js\"",
     "demo": "node examples/pack.js",
-    "report": "node src/report.js"
+    "report": "node src/report.js",
+    "scenarios": "node src/scenarios.js"
   },
   "engines": { "node": ">=20" },
   "keywords": ["rag", "knowledge-base", "data-freshness", "provenance", "deduplication", "conflict-detection", "llm", "audit"],

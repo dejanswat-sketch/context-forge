@@ -31,9 +31,11 @@
   },
   "pack": {
     "maxChunkChars": 900,
-    "minChunkChars": 40,
+    "minChunkChars": 20,
     "excludeExpired": true,
     "excludeConflicted": true,
+    "excludeSensitive": true,
+    "excludeNoSource": true,
     "maxChunksPerSource": 8
   }
 }
