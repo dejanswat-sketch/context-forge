@@ -1,0 +1,39 @@
+{
+  "_comment": "Freshness policy: how long each kind of knowledge stays valid. Edit this file — no code needed. Everything older than its TTL is excluded from a pack (and listed as risk in the report).",
+  "version": "1.0",
+  "defaultTtlDays": 180,
+  "ttlDaysByType": {
+    "price": 30,
+    "pricing": 30,
+    "cenovnik": 30,
+    "contract": 365,
+    "ugovor": 365,
+    "policy": 365,
+    "procedura": 180,
+    "runbook": 90,
+    "faq": 120,
+    "api": 60,
+    "docs": 180,
+    "ticket": 30,
+    "note": 90
+  },
+  "freshness": {
+    "_comment": "score = 1 at age 0, 0 at age = TTL. Linear decay, so an auditor can recompute it.",
+    "staleAfterRatio": 0.6,
+    "expiredAfterRatio": 1.0
+  },
+  "duplicates": {
+    "nearDuplicateThreshold": 0.85,
+    "_comment": "Exact duplicates are found by content hash; near duplicates by token Jaccard similarity."
+  },
+  "conflicts": {
+    "_comment": "Same entity key with different values across sources. Conflicts are NEVER auto-resolved: they go to a human queue."
+  },
+  "pack": {
+    "maxChunkChars": 900,
+    "minChunkChars": 40,
+    "excludeExpired": true,
+    "excludeConflicted": true,
+    "maxChunksPerSource": 8
+  }
+}

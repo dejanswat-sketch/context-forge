@@ -1,0 +1,24 @@
+{
+  "name": "context-forge",
+  "version": "0.1.0",
+  "description": "Package knowledge for AI agents with proof of freshness: ingest, dedupe, detect conflicts, score freshness, emit RAG packs with citations and SHA-256 provenance. No dependencies.",
+  "type": "module",
+  "main": "src/packer.js",
+  "exports": {
+    ".": "./src/packer.js",
+    "./ingestor": "./src/ingestor.js",
+    "./deduper": "./src/deduper.js",
+    "./freshness": "./src/freshness.js",
+    "./report": "./src/report.js"
+  },
+  "files": ["src", "examples/synthetic-corpus.js", "policy.json", "README.md", "STRUKTURA.md", "LICENSE"],
+  "scripts": {
+    "test": "node --test \"test/*.test.js\"",
+    "demo": "node examples/pack.js",
+    "report": "node src/report.js"
+  },
+  "engines": { "node": ">=20" },
+  "keywords": ["rag", "knowledge-base", "data-freshness", "provenance", "deduplication", "conflict-detection", "llm", "audit"],
+  "license": "MIT",
+  "author": "Dejan Milošević (DEJAN MILOŠEVIĆ PR) <dejanswat@gmail.com>"
+}
