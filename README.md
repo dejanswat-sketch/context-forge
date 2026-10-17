@@ -10,7 +10,9 @@
 > **Bez čega radi:** bez zavisnosti, bez interneta.
 > **U portalu:** `http://127.0.0.1:3150/` → tab **Context Forge** (dugmad: Demo, Scenariji, Izveštaj, Testovi).
 
-![Context Forge — demo output](demo.svg)
+![Context Forge — demo](demo.gif)
+
+<sub>Animated: the same run, one line at a time. Static version: [demo.svg](demo.svg)</sub>
 
 **Package knowledge for AI agents — with proof of freshness.**
 
