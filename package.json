@@ -11,7 +11,7 @@
     "./freshness": "./src/freshness.js",
     "./report": "./src/report.js"
   },
-  "files": ["src", "examples/synthetic-corpus.js", "policy.json", "README.md", "STRUKTURA.md", "LICENSE"],
+  "files": ["src", "examples/synthetic-corpus.js", "policy.json", "README.md", "STRUCTURE.md", "LICENSE"],
   "scripts": {
     "test": "node --test \"test/*.test.js\"",
     "demo": "node examples/pack.js",
