@@ -1,6 +1,6 @@
-# STRUKTURA — Context Forge v1.0.0 (izmjereno 14.10.2026)
+# STRUKTURA — Context Forge v1.0.0 (izmereno 14.10.2026)
 
-> Provjera: „da li je bez zavisnosti i može li firma za 5 minuta". Svaki red je izmjeren.
+> Provera: „da li je bez zavisnosti i može li firma za 5 minuta". Svaki red je izmeren.
 
 ## 1. Fajlovi (31 · 1903 linija · 91.4 KB)
 
@@ -40,7 +40,7 @@
 
 ## 2. Zavisnosti
 
-| Provjera | Rezultat |
+| Provera | Rezultat |
 |---|---|
 | Importi | samo `node:*` i sopstveni fajlovi |
 | van `node:*` i `./` | **nijedan** ✅ |
@@ -75,7 +75,7 @@
 | `./synthetic-corpus.js` | 1 |
 | `../examples/synthetic-corpus.js` | 1 |
 
-## 3. Pet minuta (svježa kopija, bez `npm install`)
+## 3. Pet minuta (sveža kopija, bez `npm install`)
 
 | Korak | Rezultat |
 |---|---|
@@ -92,7 +92,7 @@
 
 Konektori (Drive/Notion/tiketi) · ekstrakcija konflikata iz slobodnog teksta · embeddings/vektor baza · multi-tenant · cloud.
 
-## 6. Provjeri sam (60 s)
+## 6. Proveri sam (60 s)
 
 ```powershell
 cd E:\NMQ-PROGRAMI\products\context-forge
@@ -100,5 +100,5 @@ node -e "const p=require('./package.json'); console.log(p.dependencies===undefin
 Test-Path node_modules      # False
 npm test                    # 50/50
 node src/scenarios.js       # 7/7
-node examples/pack.js       # cijeli tok, 0,15 s
+node examples/pack.js       # celi tok, 0,15 s
 ```

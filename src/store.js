@@ -1,6 +1,6 @@
-// store.js — append-only zapisi + hash dokazi. Isti princip kao u AgentGuard Lite, ali ovdje čuva ZNANJE.
+// store.js — append-only zapisi + hash dokazi. Isti princip kao u AgentGuard Lite, ali ovde čuva ZNANJE.
 //
-// ZAŠTO append-only: kod znanja se mijenja SADRŽAJ, a ne smije se izgubiti dokaz šta je bilo ranije.
+// ZAŠTO append-only: kod znanja se menja SADRŽAJ, a ne smije se izgubiti dokaz šta je bilo ranije.
 // Zato svaki ingest i svaki paket ostaju zapisani, sa hashom — auditor može da rekonstruiše stanje bilo kog dana.
 import fs from 'node:fs';
 import path from 'node:path';

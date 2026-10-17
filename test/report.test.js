@@ -9,15 +9,15 @@ import { usisajListu } from '../src/ingestor.js';
 import { napraviKorpus } from '../examples/synthetic-corpus.js';
 
 const SADA = Date.parse('2026-10-14T12:00:00Z');
-const prije = (dana) => new Date(SADA - dana * 86400000).toISOString();
+const pre = (dana) => new Date(SADA - dana * 86400000).toISOString();
 const tmp = () => fs.mkdtempSync(path.join(os.tmpdir(), 'cf-rep-'));
 
 const paketSa = (izvori) => napraviPaket(usisajListu(izvori), { sada: SADA });
 
 test('the summary carries the numbers a manager asks for', () => {
   const r = saberi(paketSa([
-    { id: 'a.md', tip: 'docs', tekst: 'Svez tekst o ponudi i ceni za klijente.', updatedAt: prije(5), owner: 'x@firma' },
-    { id: 'b.md', tip: 'price', tekst: 'Istekao cenovnik koji vise nije vazeci za klijente.', updatedAt: prije(300), owner: null },
+    { id: 'a.md', tip: 'docs', tekst: 'Svez tekst o ponudi i ceni za klijente.', updatedAt: pre(5), owner: 'x@firma' },
+    { id: 'b.md', tip: 'price', tekst: 'Istekao cenovnik koji vise nije vazeci za klijente.', updatedAt: pre(300), owner: null },
   ]));
   assert.equal(r.izvora, 2);
   assert.equal(r.expired, 1);
@@ -34,7 +34,7 @@ test('risk is scored, not decorative', () => {
 });
 
 test('the management sentence is built from the measurements', () => {
-  const r = saberi(paketSa([{ id: 'a.md', tip: 'docs', tekst: 'Tekst za recenicu izvjestaja.', updatedAt: prije(400) }]));
+  const r = saberi(paketSa([{ id: 'a.md', tip: 'docs', tekst: 'Tekst za recenicu izvjestaja.', updatedAt: pre(400) }]));
   const s = recenica(r);
   assert.match(s, /1 izvora znanja/);
   assert.match(s, /Rizik: \*\*/);
@@ -43,7 +43,7 @@ test('the management sentence is built from the measurements', () => {
 
 test('a report is written as md + json + sha256', () => {
   const d = tmp();
-  const paket = paketSa([{ id: 'a.md', tip: 'docs', tekst: 'Tekst za fajlove izvjestaja i hash.', updatedAt: prije(3) }]);
+  const paket = paketSa([{ id: 'a.md', tip: 'docs', tekst: 'Tekst za fajlove izvjestaja i hash.', updatedAt: pre(3) }]);
   const r = napisiIzvestaj(paket, d);
   assert.ok(fs.existsSync(r.md));
   assert.ok(fs.existsSync(r.json));

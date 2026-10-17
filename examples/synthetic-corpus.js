@@ -1,11 +1,11 @@
 // synthetic-corpus.js — deterministički korpus: 312 izvora, 47 duplikata, 12 konflikata, 23% starije od 90 dana.
 //
 // ZAŠTO generator u paketu: demo mora da bude PONOVLJIV (isti brojevi na svakoj mašini, bez mreže, bez tuđih podataka).
-// Brojevi su CILJANI i provjeravaju se (test/ korpus test), a ne "otprilike" — inače demo laže.
+// Brojevi su CILJANI i proveravaju se (test/ korpus test), a ne "otprilike" — inače demo laže.
 //
 // Kako se postiže tačnost:
 //   · 265 jedinstvenih + 47 kopija (kopija je IDENTIČAN tekst → isti sha256) = 312
-//   · cijena po proizvodu je deterministička → nema SLUČAJNIH konflikata; 12 konflikata se ubacuje namjerno
+//   · cena po proizvodu je deterministička → nema SLUČAJNIH konflikata; 12 konflikata se ubacuje namerno
 //   · tačno 23% izvora dobija datum stariji od 90 dana (ne "dok ne napunimo")
 //   · tipovi su realni (docs 180 dana TTL, price 30) → istekne samo ono što stvarno treba
 function prng(seme) {
@@ -18,7 +18,7 @@ const PROIZVODI = ['Starter', 'Pro', 'Enterprise', 'Add-on Analytics', 'Support 
 const VLASNICI = ['prodaja@firma', 'podrska@firma', 'finansije@firma', null, 'it@firma'];
 // tip → koliko ih ima (ukupno 100); TTL dolazi iz policy.json
 const SMJESA = [['docs', 70], ['policy', 12], ['api', 8], ['price', 6], ['ticket', 4]];
-const CIJENA_PO_PROIZVODU = { Starter: 29, Pro: 79, 'Add-on Analytics': 49, 'Support Plus': 39, Enterprise: 199 };
+const CenA_PO_PROIZVODU = { Starter: 29, Pro: 79, 'Add-on Analytics': 49, 'Support Plus': 39, Enterprise: 199 };
 
 export function napraviKorpus({ ukupno = 312, duplikata = 47, konflikata = 12, procenatPreko90 = 23, seme = 20261014 } = {}) {
   const rnd = prng(seme);
@@ -27,7 +27,7 @@ export function napraviKorpus({ ukupno = 312, duplikata = 47, konflikata = 12, p
 
   // 1) tipovi po smjesi (tačan broj po tipu)
   const tipovi = [];
-  for (const [tip, dio] of SMJESA) for (let i = 0; i < Math.round((dio / 100) * distinct); i++) tipovi.push(tip);
+  for (const [tip, deo] of SMJESA) for (let i = 0; i < Math.round((deo / 100) * distinct); i++) tipovi.push(tip);
   while (tipovi.length < distinct) tipovi.push('docs');
   tipovi.length = distinct;
 
@@ -35,19 +35,19 @@ export function napraviKorpus({ ukupno = 312, duplikata = 47, konflikata = 12, p
   for (let i = 0; i < distinct; i++) {
     const tip = tipovi[i];
     const proizvod = PROIZVODI[i % PROIZVODI.length];
-    const cijena = CIJENA_PO_PROIZVODU[proizvod];                 // deterministički → nema slučajnih konflikata
+    const cena = CenA_PO_PROIZVODU[proizvod];                 // deterministički → nema slučajnih konflikata
     const id = `${tip}/${proizvod.toLowerCase().replace(/\s+/g, '-')}-${String(i + 1).padStart(3, '0')}.md`;
     izvori.push({
       id, tip,
       owner: VLASNICI[Math.floor(rnd() * VLASNICI.length)],
       updatedAt: new Date(SADA).toISOString(),
       dateSource: 'provided',
-      facts: [{ key: `cijena:${proizvod.toLowerCase()}`, value: String(cijena) }],
+      facts: [{ key: `cena:${proizvod.toLowerCase()}`, value: String(cena) }],
       tekst: [
         `# ${proizvod} — ${tip} (ref ${String(i + 1).padStart(3, '0')})`, '',
         `Dokument ${String(i + 1).padStart(3, '0')} opisuje ponudu "${proizvod}" (tip: ${tip}).`,
-        `Cijena za ${proizvod} iznosi ${cijena} EUR mjesečno za standardni paket.`,
-        `Uslovi: bez skrivenih troškova; otkazivanje 30 dana prije isteka.`,
+        `Cena za ${proizvod} iznosi ${cena} EUR mesečno za standardni paket.`,
+        `Uslovi: bez skrivenih troškova; otkazivanje 30 dana pre isteka.`,
         `Kontakt: ${VLASNICI[Math.floor(rnd() * VLASNICI.length)] || 'prodaja@firma'}.`,
       ].join('\n'),
     });
@@ -63,18 +63,18 @@ export function napraviKorpus({ ukupno = 312, duplikata = 47, konflikata = 12, p
     izvori[i].updatedAt = new Date(SADA - dana * DAN).toISOString();
   }
 
-  // 4) konflikti: 12 namjernih (2 izvora, ista ključ, različita vrijednost) — biraju se iz SVIJEŽIH (da bi inače ušli u paket)
+  // 4) konflikti: 12 namernih (2 izvora, ista ključ, različita vrednost) — biraju se iz SVIJEŽIH (da bi inače ušli u paket)
   const svjezi = izvori.map((s, i) => ({ s, i })).filter(({ i }) => !stariSet.has(i));
   const konfliktniKljucevi = [];
   for (let k = 0; k < konflikata; k++) {
     const a = svjezi[(k * 2) % svjezi.length].s;
     const b = svjezi[(k * 2 + 1) % svjezi.length].s;
-    const kljuc = `cijena:${PROIZVODI[k % PROIZVODI.length].toLowerCase()}-konflikt-${k + 1}`;
+    const kljuc = `cena:${PROIZVODI[k % PROIZVODI.length].toLowerCase()}-konflikt-${k + 1}`;
     const v1 = String(100 + k * 10), v2 = String(100 + k * 10 + 25);
     a.facts = [...a.facts, { key: kljuc, value: v1 }];
     b.facts = [...b.facts, { key: kljuc, value: v2 }];
-    a.tekst += `\n\nNapomena ${k + 1}: posebna cijena je ${v1} EUR.`;
-    b.tekst += `\n\nNapomena ${k + 1}: posebna cijena je ${v2} EUR.`;
+    a.tekst += `\n\nNapomena ${k + 1}: posebna cena je ${v1} EUR.`;
+    b.tekst += `\n\nNapomena ${k + 1}: posebna cena je ${v2} EUR.`;
     konfliktniKljucevi.push(kljuc);
   }
 

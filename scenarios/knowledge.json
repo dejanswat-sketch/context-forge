@@ -5,7 +5,7 @@
   "scenariji": [
     {
       "id": "S1-duplikat",
-      "naziv": "Isti tekst na tri mjesta — ostaje jedan",
+      "naziv": "Isti tekst na tri mesta — ostaje jedan",
       "taksonomija": "duplikat",
       "ulaz": [
         { "id": "policy_2024.md", "tekst": "Refund do 1000€ dozvoljen\n\nvlasnik: finansije\ndatum: 2026-10-10", "owner": "finansije", "updatedAt": "2026-10-10" },
@@ -16,7 +16,7 @@
     },
     {
       "id": "S2-konflikt",
-      "naziv": "Ista cijena, dvije vrijednosti — čovjek odlučuje",
+      "naziv": "Ista cena, dve vrednosti — čovjek odlučuje",
       "taksonomija": "konflikt",
       "ulaz": [
         { "id": "policy_2024.md", "tekst": "Refund je 1000€ po pravilniku.", "owner": "finansije", "updatedAt": "2024-11-02", "facts": [{ "key": "refund:limit", "value": "1000" }] },

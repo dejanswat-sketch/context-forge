@@ -1,6 +1,6 @@
-// report.js — izvještaj za upravu: koliko izvora, koliko duplikata, konflikata i koliko je znanje staro.
+// report.js — izveštaj za upravu: koliko izvora, koliko duplikata, konflikata i koliko je znanje staro.
 //
-// Jedna rečenica koju menadžer može da ponovi, plus MD + JSON + sha256 (dokaz da izvještaj nije mijenjan).
+// Jedna rečenica koju menadžer može da ponovi, plus MD + JSON + sha256 (dokaz da izveštaj nije menjan).
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -43,7 +43,7 @@ export function rizik(s) {
   return { bodovi, nivo, clanovi: clanovi.filter((c) => c.broj > 0) };
 }
 
-/** Rečenica za upravu (jedna, mjerljiva). */
+/** Rečenica za upravu (jedna, merljiva). */
 export function recenica(r) {
   return `${r.izvora} izvora znanja: ${r.duplikata} duplikata (${r.grupaDuplikata} grupa), ` +
     `${r.konflikata} konflikata (traži čovjeka), ${r.osetljivih} osetljivih (PII, redigovano), ${r.procenatPreko90}% starije od 90 dana, ` +
@@ -51,29 +51,29 @@ export function recenica(r) {
     `U paket je ušlo ${r.chunkova} chunkova sa citatom i hashom, ${r.izbaceno} izvora izbačeno sa razlogom.`;
 }
 
-/** Izračunaj izvor + napiši izvještaj (MD + JSON + sha256). */
+/** Izračunaj izvor + napiši izveštaj (MD + JSON + sha256). */
 export function napisiIzvestaj(paket, dir) {
   const r = saberi(paket);
   fs.mkdirSync(dir, { recursive: true });
   const datum = paket.at.slice(0, 10);
   const md = [
-    `# Context Forge — izvještaj o znanju (${datum})`, '',
+    `# Context Forge — izveštaj o znanju (${datum})`, '',
     recenica(r), '',
-    '| Mjera | Vrijednost |', '|---|---|',
+    '| Mera | Vrednost |', '|---|---|',
     `| Izvora | ${r.izvora} |`,
     `| Chunkova u paketu (sa citatom + hashom) | ${r.chunkova} |`,
     `| Izbačeno (sa razlogom) | ${r.izbaceno} |`,
     `| Duplikata | ${r.duplikata} (${r.grupaDuplikata} grupa) |`,
     `| Konflikata | ${r.konflikata} |`,
-    `| Svježe / starije / isteklo / bez datuma | ${r.fresh} / ${r.stale} / ${r.expired} / ${r.bezDatuma} |`,
+    `| Sveže / starije / isteklo / bez datuma | ${r.fresh} / ${r.stale} / ${r.expired} / ${r.bezDatuma} |`,
     `| Znanje starije od 90 dana | ${r.procenatPreko90}% |`,
-    `| Prosječna ocjena svežine | ${r.prosjecanScore} |`,
+    `| Prosečna ocjena svežine | ${r.prosjecanScore} |`,
     `| Bez vlasnika (rizik odgovornosti) | ${r.bezVlasnika} |`,
     `| Hash paketa | \`${r.paketHash}\` |`, '',
     '## Rizik', '',
     ...(r.rizik.clanovi.length ? r.rizik.clanovi.map((c) => `- ${c.naziv}: **${c.broj}**`) : ['- nema rizika u ovom paketu']), '',
     '## Konflikti (čovjek odlučuje)', '',
-    ...(paket.konflikti.length ? paket.konflikti.map((k) => `- **${k.key}**: ${k.vrijednosti.map((v) => `${v.value} — \`${v.izvor}\` (${String(v.updatedAt).slice(0, 10)})`).join('  vs  ')}`) : ['- nema konflikata']), '',
+    ...(paket.konflikti.length ? paket.konflikti.map((k) => `- **${k.key}**: ${k.vrednosti.map((v) => `${v.value} — \`${v.izvor}\` (${String(v.updatedAt).slice(0, 10)})`).join('  vs  ')}`) : ['- nema konflikata']), '',
     '## Izbačeno iz paketa (i zašto)', '',
     ...(paket.izbaceno.length ? paket.izbaceno.slice(0, 30).map((x) => `- \`${x.id}\` — ${x.razlog}`) : ['- ništa nije izbačeno']), '',
   ].join('\n');

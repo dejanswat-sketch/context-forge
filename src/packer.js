@@ -2,7 +2,7 @@
 //
 // PRAVILA (policy.json → pack):
 //   · istekao izvor ili bez datuma se NE pakuje — agent ne smije da čita nedokazivo znanje
-//   · PII/osetljivo se NE pakuje; nalaz ide u izvještaj REDIGOVAN (nikad čist podatak)
+//   · PII/osetljivo se NE pakuje; nalaz ide u izveštaj REDIGOVAN (nikad čist podatak)
 //   · konfliktni ključevi se NE pakuju — idu čovjeku
 //   · svaki chunk nosi citat (izvor, vlasnik, datum, sha256) i `dokaz` liniju za audit
 //   · ako je zadato `pitanje`, paket se sortira po (svežina * 0.6 + poklapanje * 0.4)
@@ -14,7 +14,7 @@ import { nadjiTacneDuplikate, nadjiKonflikte } from './deduper.js';
 import { detektuj, rediguj } from './sensitive.js';
 import { hashTeksta } from './store.js';
 
-/** Podijeli tekst na chunkove po pasusima, uz maksimalnu dužinu. */
+/** Podeli tekst na chunkove po pasusima, uz maksimalnu dužinu. */
 export function podeliNaChunkove(tekst, { maxChunkChars = 900, minChunkChars = 40, maxChunksPerSource = 8 } = {}) {
   const delovi = String(tekst || '').split(/\n{2,}/).map((d) => d.trim()).filter(Boolean);
   const chunkovi = [];
@@ -28,7 +28,7 @@ export function podeliNaChunkove(tekst, { maxChunkChars = 900, minChunkChars = 4
   return chunkovi.filter((c) => c.length >= minChunkChars).slice(0, maxChunksPerSource);
 }
 
-// Normalizacija za poklapanje: bez dijakritike i sa ije->e, da "cijena" i "cena" budu isti pojam.
+// Normalizacija za poklapanje: bez dijakritike i sa ije->e, da "cena" i "cena" budu isti pojam.
 const srb = (t) => String(t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/ije/g, 'e').replace(/dj/g, 'd');
 const tokeni = (t) => srb(t).replace(/[^\p{L}\p{N}\s]/gu, ' ').split(/\s+/).filter((x) => x.length > 2);
 
@@ -80,7 +80,7 @@ export function napraviPaket(izvori = [], opcije = {}) {
       if (cfg.excludeSensitive) { izbaceno.push({ id: s.id, razlog: 'osetljivo: PII u izvoru (' + vrste.join(', ') + ')' }); continue; }
     }
     if (cfg.excludeNoSource && !s.id) { izbaceno.push({ id: '(nema id)', razlog: 'nema izvora — poreklo se ne može dokazati' }); continue; }
-    if (duplikatClanovi.has(s.id)) { izbaceno.push({ id: s.id, razlog: 'duplikat (isti sadržaj na drugom mjestu)' }); continue; }
+    if (duplikatClanovi.has(s.id)) { izbaceno.push({ id: s.id, razlog: 'duplikat (isti sadržaj na drugom mestu)' }); continue; }
     if (cfg.excludeExpired && ocjena.status === 'expired') { izbaceno.push({ id: s.id, razlog: `isteklo: ${ocjena.reason}` }); continue; }
     if (cfg.excludeExpired && ocjena.status === 'unknown') { izbaceno.push({ id: s.id, razlog: 'nema datuma — svežina se ne može dokazati' }); continue; }
 
@@ -158,7 +158,7 @@ export function upisiPaket(paket, dir) {
     '## Dropped (and why)', '',
     ...(paket.izbaceno.length ? paket.izbaceno.map((x) => `- \`${x.id}\` — ${x.razlog}`) : ['- nothing dropped']), '',
     '## Conflicts (human decision required)', '',
-    ...(paket.konflikti.length ? paket.konflikti.map((k) => `- **${k.key}**: ${k.vrijednosti.map((v) => `${v.value} (\`${v.izvor}\`, ${String(v.updatedAt).slice(0, 10)})`).join(' vs ')}`) : ['- none']), '',
+    ...(paket.konflikti.length ? paket.konflikti.map((k) => `- **${k.key}**: ${k.vrednosti.map((v) => `${v.value} (\`${v.izvor}\`, ${String(v.updatedAt).slice(0, 10)})`).join(' vs ')}`) : ['- none']), '',
     '## Sensitive sources (redacted — never packed)', '',
     ...(paket.osetljivi.length ? paket.osetljivi.map((x) => `- \`${x.id}\` — ${x.vrste.join(', ')}`) : ['- none']), '',
   ].join('\n');

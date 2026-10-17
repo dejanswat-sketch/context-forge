@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
-import { pusti, provjeriScenario, ROOT } from '../src/scenarios.js';
+import { pusti, proveriScenario, ROOT } from '../src/scenarios.js';
 import { napraviPaket } from '../src/packer.js';
 import { usisajListu } from '../src/ingestor.js';
 
@@ -22,7 +22,7 @@ test('the 7 scenarios cover the whole taxonomy', () => {
 test('a scenario with a wrong expectation fails (the runner does not rubber-stamp)', () => {
   const scenario = { id: 'x', naziv: 'test', taksonomija: 'sveze', ocekivano: { chunkova: 99 } };
   const paket = napraviPaket(usisajListu([{ id: 'a.md', tekst: 'Refund do 1000€ dozvoljen uz odobrenje.', updatedAt: '2026-10-10' }]));
-  const r = provjeriScenario(scenario, paket);
+  const r = proveriScenario(scenario, paket);
   assert.equal(r.prosao, false);
   assert.match(r.greske.join(' '), /chunkova/);
 });

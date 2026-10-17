@@ -1,4 +1,4 @@
-// freshness.js — koliko je znanje staro, čije je, i dokle važi. Ovo je „svežina" koju niko ne mjeri.
+// freshness.js — koliko je znanje staro, čije je, i dokle važi. Ovo je „svežina" koju niko ne meri.
 //
 // PRAVILA (iz policy.json, ne iz koda):
 //   · svaki tip znanja ima TTL (cjenovnik 30 dana, ugovor 365…)
@@ -57,5 +57,5 @@ export function ocijeniSve(izvori = [], opcije = {}) {
   };
 }
 
-/** Ima li izvor vlasnika (za izvještaj: znanje bez vlasnika je rizik odgovornosti). */
+/** Ima li izvor vlasnika (za izveštaj: znanje bez vlasnika je rizik odgovornosti). */
 export const imaVlasnika = (izvor) => Boolean(izvor.owner);

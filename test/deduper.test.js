@@ -23,7 +23,7 @@ test('no duplicates -> no groups', () => {
 
 test('similarity is 1 for the same tokens and 0 for unrelated text', () => {
   assert.equal(slicnost('kako radi refund sistem', 'refund sistem kako radi'), 1);
-  assert.equal(slicnost('potpuno razlicit tekst ovdje', 'nesto drugo sasvim'), 0);
+  assert.equal(slicnost('potpuno razlicit tekst ovde', 'nesto drugo sasvim'), 0);
   assert.ok(slicnost('cena proizvoda je 100 eura mesecno', 'cena proizvoda je 100 eura godisnje') > 0.6);
 });
 
@@ -41,13 +41,13 @@ test('near duplicates are found above the threshold only', () => {
 
 test('conflicts: same key, different value', () => {
   const s = izvori([
-    { id: 'a.md', tekst: 'ponuda A', facts: [{ key: 'cijena:starter', value: '29' }] },
-    { id: 'b.md', tekst: 'ponuda B', facts: [{ key: 'cijena:starter', value: '39' }] },
-    { id: 'c.md', tekst: 'ponuda C', facts: [{ key: 'cijena:pro', value: '79' }] },
+    { id: 'a.md', tekst: 'ponuda A', facts: [{ key: 'cena:starter', value: '29' }] },
+    { id: 'b.md', tekst: 'ponuda B', facts: [{ key: 'cena:starter', value: '39' }] },
+    { id: 'c.md', tekst: 'ponuda C', facts: [{ key: 'cena:pro', value: '79' }] },
   ]);
   const k = nadjiKonflikte(s);
   assert.equal(k.length, 1);
-  assert.equal(k[0].key, 'cijena:starter');
+  assert.equal(k[0].key, 'cena:starter');
   assert.equal(k[0].brojRazlicitih, 2);
   assert.deepEqual(k[0].izvori.sort(), ['a.md', 'b.md']);
 });

@@ -1,4 +1,4 @@
-// examples/pack.js — cijeli tok u jednom potezu (<1 s, bez mreže, bez zavisnosti).
+// examples/pack.js — celi tok u jednom potezu (<1 s, bez mreže, bez zavisnosti).
 //
 //   node examples/pack.js
 //
@@ -64,7 +64,7 @@ linija('\n4) FAÇADE (isti engine, 4 linije)');
 const z = ingestor(FOLDER);
 const cisti = deduper(z);
 const prov = freshness(cisti, { ttlDana: 90 });
-const paketi = packer(prov, { pitanje: 'koja je cijena starter paketa?', sada: SADA, maxChunkova: 3 });
+const paketi = packer(prov, { pitanje: 'koja je cena starter paketa?', sada: SADA, maxChunkova: 3 });
 linija(`   ${z.length} → ${cisti.length} → konflikata ${prov.konflikti.length} → paketa ${paketi.length}`);
 linija(`   prvi: ${JSON.stringify({ text: paketi[0]?.tekst?.slice(0, 34), citat: paketi[0]?.citat?.izvor, datum: String(paketi[0]?.citat?.updatedAt).slice(0, 10), freshness: paketi[0]?.svezina?.score, hash: paketi[0]?.citat?.sha256?.slice(0, 8) })}`);
 

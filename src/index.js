@@ -19,7 +19,7 @@ export function ingestor(izvor) {
   return usisajListu(Array.isArray(izvor) ? izvor : []);
 }
 
-/** Dedup: vraća ČISTU listu (bez duplikata), sa `_stat` za izvještaj. Duplikati se zadržavaju kao nalaz. */
+/** Dedup: vraća ČISTU listu (bez duplikata), sa `_stat` za izveštaj. Duplikati se zadržavaju kao nalaz. */
 export function deduper(izvori = []) {
   const grupe = nadjiTacneDuplikate(izvori);
   const visak = new Set(grupe.flatMap((g) => g.clanovi.filter((c) => c !== g.kanonski)));
@@ -55,7 +55,7 @@ export function freshness(izvori = [], { ttlDana = null, sada = null } = {}) {
       tekstRedigovan: pii.length ? rediguj(s.tekst) : undefined,
     };
   });
-  const konflikti = nadjiKonflikte(izvori).map((k) => ({ tip: 'konflikt', kljuc: k.key, vrednosti: [...new Set(k.vrijednosti.map((v) => v.value))], izvori: k.izvori }));
+  const konflikti = nadjiKonflikte(izvori).map((k) => ({ tip: 'konflikt', kljuc: k.key, vrednosti: [...new Set(k.vrednosti.map((v) => v.value))], izvori: k.izvori }));
   return {
     zapisi,
     konflikti,

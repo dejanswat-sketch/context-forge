@@ -22,15 +22,15 @@ test('the finding is always redacted — the raw value never leaves the check', 
   const nalazi = detektuj(t);
   assert.ok(nalazi.length >= 2);
   for (const n of nalazi) {
-    assert.ok(!n.primjer.includes('0101990712345'), 'JMBG ne smije biti u nalazu');
-    assert.ok(!n.primjer.includes('RS35260005601001611379'), 'IBAN ne smije biti u nalazu');
+    assert.ok(!n.primer.includes('0101990712345'), 'JMBG ne smije biti u nalazu');
+    assert.ok(!n.primer.includes('RS35260005601001611379'), 'IBAN ne smije biti u nalazu');
   }
   assert.ok(!rediguj(t).includes('0101990712345'));
 });
 
 test('clean text yields nothing (no false alarms on normal business text)', () => {
   assert.equal(imaPII('Refund do 1000€ dozvoljen uz odobrenje finansija.'), false);
-  assert.deepEqual(vrstePII('Cenovnik za Starter paket je 29 EUR mjesečno.'), []);
+  assert.deepEqual(vrstePII('Cenovnik za Starter paket je 29 EUR mesečno.'), []);
 });
 
 test('marking sources sets the flag and keeps a redacted copy', () => {

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { ttlZa, danaStarosti, ocijeni, ocijeniSve, ucitajPolitiku } from '../src/freshness.js';
 
 const SADA = Date.parse('2026-10-14T12:00:00Z');
-const prije = (dana) => new Date(SADA - dana * 86400000).toISOString();
+const pre = (dana) => new Date(SADA - dana * 86400000).toISOString();
 const politika = ucitajPolitiku();
 
 test('TTL comes from policy.json per type', () => {
@@ -16,15 +16,15 @@ test('TTL comes from policy.json per type', () => {
 });
 
 test('age in days is measured, not guessed', () => {
-  assert.equal(danaStarosti(prije(10), SADA), 10);
+  assert.equal(danaStarosti(pre(10), SADA), 10);
   assert.equal(danaStarosti(null, SADA), null);
   assert.equal(danaStarosti('nije-datum', SADA), null);
 });
 
 test('fresh / stale / expired follow the ratio in the policy', () => {
-  assert.equal(ocijeni({ id: 'a', tip: 'docs', updatedAt: prije(10) }, { sada: SADA, politika }).status, 'fresh');
-  assert.equal(ocijeni({ id: 'b', tip: 'docs', updatedAt: prije(140) }, { sada: SADA, politika }).status, 'stale');
-  assert.equal(ocijeni({ id: 'c', tip: 'docs', updatedAt: prije(200) }, { sada: SADA, politika }).status, 'expired');
+  assert.equal(ocijeni({ id: 'a', tip: 'docs', updatedAt: pre(10) }, { sada: SADA, politika }).status, 'fresh');
+  assert.equal(ocijeni({ id: 'b', tip: 'docs', updatedAt: pre(140) }, { sada: SADA, politika }).status, 'stale');
+  assert.equal(ocijeni({ id: 'c', tip: 'docs', updatedAt: pre(200) }, { sada: SADA, politika }).status, 'expired');
 });
 
 test('a source without a date cannot prove freshness (status unknown)', () => {
@@ -35,16 +35,16 @@ test('a source without a date cannot prove freshness (status unknown)', () => {
 });
 
 test('score decays linearly: 1 at day 0, 0 at TTL', () => {
-  assert.equal(ocijeni({ id: 'a', tip: 'price', updatedAt: prije(0) }, { sada: SADA, politika }).score, 1);
-  assert.equal(ocijeni({ id: 'b', tip: 'price', updatedAt: prije(30) }, { sada: SADA, politika }).score, 0);
-  assert.equal(ocijeni({ id: 'c', tip: 'price', updatedAt: prije(15) }, { sada: SADA, politika }).score, 0.5);
+  assert.equal(ocijeni({ id: 'a', tip: 'price', updatedAt: pre(0) }, { sada: SADA, politika }).score, 1);
+  assert.equal(ocijeni({ id: 'b', tip: 'price', updatedAt: pre(30) }, { sada: SADA, politika }).score, 0);
+  assert.equal(ocijeni({ id: 'c', tip: 'price', updatedAt: pre(15) }, { sada: SADA, politika }).score, 0.5);
 });
 
 test('summary reports counts, percentage over 90 days and owners missing', () => {
   const izvori = [
-    { id: 'a', tip: 'docs', owner: 'x@firma', updatedAt: prije(5) },
-    { id: 'b', tip: 'docs', owner: null, updatedAt: prije(120) },
-    { id: 'c', tip: 'price', owner: 'y@firma', updatedAt: prije(200) },
+    { id: 'a', tip: 'docs', owner: 'x@firma', updatedAt: pre(5) },
+    { id: 'b', tip: 'docs', owner: null, updatedAt: pre(120) },
+    { id: 'c', tip: 'price', owner: 'y@firma', updatedAt: pre(200) },
     { id: 'd', tip: 'docs', owner: null, updatedAt: null },
   ];
   const { sazetak } = ocijeniSve(izvori, { sada: SADA, politika });

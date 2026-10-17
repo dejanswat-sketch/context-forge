@@ -4,7 +4,7 @@
 // Svaki scenario ima očekivanje; ako ijedno padne — runner vraća kod 1 i to se vidi u krugu.
 //
 // Upotreba: node src/scenarios.js [--tiho]
-// Izlaz: reports/knowledge-<dan>.md (+ .json, + sha256) — isti izvještaj kao za pravi paket.
+// Izlaz: reports/knowledge-<dan>.md (+ .json, + sha256) — isti izveštaj kao za pravi paket.
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -15,8 +15,8 @@ import { napraviPaket } from './packer.js';
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SADA = Date.parse('2026-10-14T12:00:00Z');
 
-/** ČISTA FUNKCIJA — provjeri očekivanja jednog scenarija protiv napravljenog paketa. */
-export function provjeriScenario(scenario, paket) {
+/** ČISTA FUNKCIJA — proveri očekivanja jednog scenarija protiv napravljenog paketa. */
+export function proveriScenario(scenario, paket) {
   const o = scenario.ocekivano || {};
   const s = paket.sazetak;
   const greske = [];
@@ -55,7 +55,7 @@ export function pusti(file = path.join(ROOT, 'scenarios', 'knowledge.json')) {
   const rezultati = paketScenarija.scenariji.map((sc) => {
     const izvori = usisajListu(sc.ulaz || []);
     const paket = napraviPaket(izvori, { sada: SADA });
-    return provjeriScenario(sc, paket);
+    return proveriScenario(sc, paket);
   });
   return {
     taksonomija: paketScenarija.taksonomija,

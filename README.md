@@ -1,5 +1,15 @@
 # Context Forge
 
+> **Na srpskom — ukratko**
+> **Šta je:** program koji priprema znanje pre nego što ga daš AI alatu (ulazna strana RAG-a).
+> **Čemu služi:** AI ne greši najčešće zbog modela, nego zbog onoga što mu daš — 3.000 dokumenata u kojima je 40% duplikata,
+> 20% zastarelo i 10% protivrječno, pa agent citira cenu iz 2023. Ovaj program to počisti, obeleži i izmeri.
+> **Kako se pokreće:** `node examples/pack.js` (celi tok na uzorku, 0,15 s) · `npm test` (50 provera) · `node src/scenarios.js` (7/7) · `node src/report.js` (izveštaj).
+> **Šta dobiješ:** paket znanja (JSON + čitljiv `.md`) u kojem svaki deo nosi **izvor, vlasnika, datum i SHA-256 potpis**,
+> plus spisak duplikata, konflikata, zastarelih i osetljivih podataka.
+> **Bez čega radi:** bez zavisnosti, bez interneta.
+> **U portalu:** `http://127.0.0.1:3150/` → tab **Context Forge** (dugmad: Demo, Scenariji, Izveštaj, Testovi).
+
 **Package knowledge for AI agents — with proof of freshness.**
 
 RAG systems rarely fail because of the model. They fail because of the context: 3,000 documents where 40 % are
@@ -23,10 +33,12 @@ $ node examples/pack.js
 3. konflikti   12 konflikata (ide čovjeku, ne agentu)
 4. svežina     fresh 223 · stale 26 · isteklo 63 · bez datuma 0 · >90 dana 23.1%
 5. paket       178 chunkova sa citatom+hashom · izbačeno 134
-6. izvještaj   rizik: kritičan (309 bodova)
+6. izveštaj   rizik: kritičan (309 bodova)
 ```
 
 ---
+
+> **See real output first:** [DEMO.md](DEMO.md) — what it prints when it runs, and what each line proves.
 
 ## Why teams need it
 
@@ -154,7 +166,7 @@ MIT — see `LICENSE`.
 | `scenarios/knowledge.json` | **7 scenarija kao PODACI** + taksonomija (`duplikat`, `konflikt`, `zastarelo`, `bez-vlasnika`, `bez-izvora`, `osetljivo`, `sveze`) | `node src/scenarios.js` → **7/7** + `reports/knowledge-scenarios-<dan>.md` |
 | rangiranje po pitanju | `packer(prov, { pitanje: 'koja je cena refund-a?' })` → `match` po chunku, sort `0.6*svežina + 0.4*poklapanje` | `examples/pack.js` sekcija 3 (isto znanje, drugačiji redosled) |
 | **PII u toku** | `src/sensitive.js`: JMBG, IBAN, kartica, telefon, email, tajne, lozinke → `flag: osetljivo`, nalaz **redigovan**, izvor **nikad u paket** | scenario S6 + `test/sensitive.test.js` (6 testova) |
-| normalizacija za poklapanje | „cena" nalazi „cijena" (dijakritika + `ije→e`) | `test/index.test.js` |
+| normalizacija za poklapanje | „cena" nalazi „cena" (dijakritika + `ije→e`) | `test/index.test.js` |
 | `src/index.js` (façade) | `ingestor / deduper / freshness / packer` u 4 linije koda | `examples/pack.js` sekcija 4 |
 | demo na **folderu** | `data/knowledge/` (5 fajlova: svež, istekao ×2, bez vlasnika, PII) | `examples/pack.js` sekcija 1 |
 | „nema tihog izbacivanja" | izvor koji ne da nijedan chunk dobija razlog u `izbaceno` | `test/index.test.js` |
@@ -162,7 +174,7 @@ MIT — see `LICENSE`.
 **Testovi: 50/50** · `npm test` ~1 s · tok `node examples/pack.js` **0,15 s** · i dalje **0 zavisnosti**.
 
 ### Šta je v1.0.0 otkrilo o sebi (nalazi iz rada, ne iz želje)
-1. **Datum iz zaglavlja je bio pregažen mtime-om** — dokument je tvrdio 2023, mašina ga čitala kao svjež. Sada tekst ima prednost (`dateSource: text`).
+1. **Datum iz zaglavlja je bio pregažen mtime-om** — dokument je tvrdio 2023, mašina ga čitala kao svež. Sada tekst ima prednost (`dateSource: text`).
 2. **Prekratak izvor je tiho nestajao** (ispod `minChunkChars`) — kršenje osnovnog pravila; sada svaki izlaz ima razlog, a prag je 20 znakova.
-3. **„cena" nije nalazilo „cijena"** — pitanje je vraćalo prazan paket; dodata je normalizacija (dijakritika + `ije→e`).
-4. **Scenario S1 je tražio svjež kanonski izvor, a fiksura je bila stara** — dokaz da runner ne daje pečat nego provjerava.
+3. **„cena" nije nalazilo „cena"** — pitanje je vraćalo prazan paket; dodata je normalizacija (dijakritika + `ije→e`).
+4. **Scenario S1 je tražio svež kanonski izvor, a fiksura je bila stara** — dokaz da runner ne daje pečat nego proverava.

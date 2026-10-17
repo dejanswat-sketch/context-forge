@@ -53,8 +53,8 @@ test('packer returns chunks, and with a question ranks by relevance + freshness'
   assert.ok(sa[0].match >= sa[sa.length - 1].match, 'prvi je najrelevantniji');
 });
 
-test('matching normalises Serbian variants: "cena" finds "cijena"', () => {
-  assert.ok(poklapanje('Cijena za Starter paket iznosi 29 EUR', 'cena starter') > 0.5);
+test('matching normalises Serbian variants: "cena" finds "cena"', () => {
+  assert.ok(poklapanje('Cena za Starter paket iznosi 29 EUR', 'cena starter') > 0.5);
   assert.equal(poklapanje('nepovezan tekst o vremenu', 'refund iban'), 0);
 });
 

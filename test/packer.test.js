@@ -7,10 +7,10 @@ import { podeliNaChunkove, napraviPaket, upisiPaket } from '../src/packer.js';
 import { usisajListu } from '../src/ingestor.js';
 
 const SADA = Date.parse('2026-10-14T12:00:00Z');
-const prije = (dana) => new Date(SADA - dana * 86400000).toISOString();
+const pre = (dana) => new Date(SADA - dana * 86400000).toISOString();
 const tmp = () => fs.mkdtempSync(path.join(os.tmpdir(), 'cf-pack-'));
 
-const dobar = (id, tekst, extra = {}) => ({ id, tip: 'docs', tekst, owner: 'prodaja@firma', updatedAt: prije(5), ...extra });
+const dobar = (id, tekst, extra = {}) => ({ id, tip: 'docs', tekst, owner: 'prodaja@firma', updatedAt: pre(5), ...extra });
 
 test('chunks split by paragraph and respect max length', () => {
   const tekst = ['a'.repeat(400), 'b'.repeat(400), 'c'.repeat(400)].join('\n\n');
@@ -41,7 +41,7 @@ test('every chunk carries a citation with source hash and freshness', () => {
 test('expired knowledge never enters the pack (and says why)', () => {
   const izvori = usisajListu([
     dobar('nov.md', 'Svez tekst koji treba da udje u paket bez problema.'),
-    dobar('star.md', 'Star tekst koji ne sme da udje u paket jer je istekao.', { updatedAt: prije(300) }),
+    dobar('star.md', 'Star tekst koji ne sme da udje u paket jer je istekao.', { updatedAt: pre(300) }),
   ]);
   const paket = napraviPaket(izvori, { sada: SADA });
   assert.equal(paket.sazetak.chunkova, 1);
@@ -58,13 +58,13 @@ test('a source without a date is excluded (freshness cannot be proven)', () => {
 
 test('conflicted sources are kept out of the pack and listed for a human', () => {
   const izvori = usisajListu([
-    dobar('a.md', 'Cena starter paketa je 29 eura mesecno za sve klijente.', { facts: [{ key: 'cijena:starter', value: '29' }] }),
-    dobar('b.md', 'Cena starter paketa je 39 eura mesecno za sve klijente.', { facts: [{ key: 'cijena:starter', value: '39' }] }),
-    dobar('c.md', 'Nepovezan tekst o necemu drugom sto nije cena.', { facts: [{ key: 'cijena:pro', value: '79' }] }),
+    dobar('a.md', 'Cena starter paketa je 29 eura mesecno za sve klijente.', { facts: [{ key: 'cena:starter', value: '29' }] }),
+    dobar('b.md', 'Cena starter paketa je 39 eura mesecno za sve klijente.', { facts: [{ key: 'cena:starter', value: '39' }] }),
+    dobar('c.md', 'Nepovezan tekst o necemu drugom sto nije cena.', { facts: [{ key: 'cena:pro', value: '79' }] }),
   ]);
   const paket = napraviPaket(izvori, { sada: SADA });
   assert.equal(paket.sazetak.konflikata, 1);
-  assert.ok(paket.konflikti[0].key === 'cijena:starter');
+  assert.ok(paket.konflikti[0].key === 'cena:starter');
   assert.equal(paket.chunkovi.filter((c) => c.citat.izvor === 'c.md').length, 1);
   assert.ok(paket.izbaceno.some((x) => x.id === 'a.md' && /konflikt/.test(x.razlog)));
 });
@@ -72,7 +72,7 @@ test('conflicted sources are kept out of the pack and listed for a human', () =>
 test('duplicates are not packed twice (only the canonical survives)', () => {
   const izvori = usisajListu([
     dobar('prvi.md', 'Potpuno isti tekst u dva dokumenta za test duplikata.'),
-    dobar('drugi.md', 'Potpuno isti tekst u dva dokumenta za test duplikata.', { updatedAt: prije(1) }),
+    dobar('drugi.md', 'Potpuno isti tekst u dva dokumenta za test duplikata.', { updatedAt: pre(1) }),
   ]);
   const paket = napraviPaket(izvori, { sada: SADA });
   assert.equal(paket.sazetak.chunkova, 1);

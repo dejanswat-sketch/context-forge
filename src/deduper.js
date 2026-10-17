@@ -1,7 +1,7 @@
-// deduper.js — duplikati (isti sadržaj na više mjesta) i KONFLIKTI (isti podatak, različita vrijednost).
+// deduper.js — duplikati (isti sadržaj na više mesta) i KONFLIKTI (isti podatak, različita vrednost).
 //
-// Zašto oboje u jednom modulu: oba pitanja su „isti ključ, više izvora". Duplikat = ista vrijednost;
-// konflikt = različita vrijednost. Konflikt se NIKAD ne rješava automatski — ide čovjeku.
+// Zašto oboje u jednom modulu: oba pitanja su „isti ključ, više izvora". Duplikat = ista vrednost;
+// konflikt = različita vrednost. Konflikt se NIKAD ne rešava automatski — ide čovjeku.
 import { hashTeksta } from './store.js';
 
 /** Tačni duplikati po hash-u sadržaja. Vraća grupe; kanonski izvor je najsvježiji (pa najveći). */
@@ -47,7 +47,7 @@ export function nadjiSlicne(izvori = [], prag = 0.85) {
 
 /**
  * Konflikti: isti `key` u `facts`, različita `value`.
- * @returns {{key:string, vrijednosti:Array<{value:string, izvor:string, updatedAt:string}>, izvori:string[]}[]}
+ * @returns {{key:string, vrednosti:Array<{value:string, izvor:string, updatedAt:string}>, izvori:string[]}[]}
  */
 export function nadjiKonflikte(izvori = []) {
   const po = new Map();
@@ -60,15 +60,15 @@ export function nadjiKonflikte(izvori = []) {
   }
   const konflikti = [];
   for (const [key, stavke] of po) {
-    const vrijednosti = [...new Set(stavke.map((x) => x.value))];
-    if (vrijednosti.length > 1) {
-      konflikti.push({ key, vrijednosti: stavke, izvori: [...new Set(stavke.map((x) => x.izvor))], brojRazlicitih: vrijednosti.length });
+    const vrednosti = [...new Set(stavke.map((x) => x.value))];
+    if (vrednosti.length > 1) {
+      konflikti.push({ key, vrednosti: stavke, izvori: [...new Set(stavke.map((x) => x.izvor))], brojRazlicitih: vrednosti.length });
     }
   }
   return konflikti.sort((a, b) => b.brojRazlicitih - a.brojRazlicitih || a.key.localeCompare(b.key));
 }
 
-/** Sažetak za izvještaj: koliko je ušteđeno i koliko ide čovjeku. */
+/** Sažetak za izveštaj: koliko je ušteđeno i koliko ide čovjeku. */
 export function sazetak(izvori = [], { prag = 0.85 } = {}) {
   const tacni = nadjiTacneDuplikate(izvori);
   const konflikti = nadjiKonflikte(izvori);

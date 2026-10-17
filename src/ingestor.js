@@ -2,7 +2,7 @@
 //
 // PRAVILA:
 //   · svaki izvor dobija sha256 SADRŽAJA — to je dokaz porekla (auditor traži tačno ovo)
-//   · append-only: izvor koji se nije promijenio (isti hash) se NE upisuje ponovo (idempotencija)
+//   · append-only: izvor koji se nije promenio (isti hash) se NE upisuje ponovo (idempotencija)
 //   · ništa se ne izmišlja: ako fajl nema datum, uzima se mtime fajla i to piše u polju `dateSource`
 import fs from 'node:fs';
 import path from 'node:path';
@@ -35,7 +35,7 @@ export function usisajFolder(koren, { maxBytes = 2 * 1024 * 1024 } = {}) {
   return izvori.sort((a, b) => a.id.localeCompare(b.id));
 }
 
-/** Normalizuj tekst prije hashiranja (isti sadržaj sa različitim razmacima = isti izvor). */
+/** Normalizuj tekst pre hashiranja (isti sadržaj sa različitim razmacima = isti izvor). */
 export function normalizuj(tekst) {
   // Spajamo i UNUTRASNJE visestruke razmake: dokument sa duplim razmakom je ISTI dokument (isti hash).
   return String(tekst || '').replace(/\r\n/g, '\n').split('\n').map((l) => l.replace(/\s+/g, ' ').trim()).join('\n').replace(/\n{3,}/g, '\n\n').trim();
@@ -54,7 +54,7 @@ export function procitajVlasnika(tekst) {
   return m ? m[1].trim() : null;
 }
 
-/** Zaokruži sirov izvor u zapis sa hashom, veličinom i brojem riječi. */
+/** Zaokruži sirov izvor u zapis sa hashom, veličinom i brojem reči. */
 export function okvir(izvor) {
   const norm = normalizuj(izvor.tekst);
   const d = procitajDatum(norm, izvor.updatedAt || null);
@@ -63,7 +63,7 @@ export function okvir(izvor) {
     put: izvor.put || null,
     tip: izvor.tip || 'docs',
     owner: izvor.owner || procitajVlasnika(norm),
-    // Datum iz TEKSTA ima prednost nad mtime-om: dokument sam tvrdi kad je — a to je i dio dokaza.
+    // Datum iz TEKSTA ima prednost nad mtime-om: dokument sam tvrdi kad je — a to je i deo dokaza.
     updatedAt: d.dateSource === 'text' ? d.updatedAt : (izvor.updatedAt || d.updatedAt),
     dateSource: d.dateSource === 'text' ? 'text' : (izvor.dateSource && izvor.dateSource !== 'provided' ? izvor.dateSource : d.dateSource),
     hash: hashTeksta(norm),
@@ -75,7 +75,7 @@ export function okvir(izvor) {
 }
 
 /**
- * Append-only ingest: upisuje samo izvore čiji se hash promijenio.
+ * Append-only ingest: upisuje samo izvore čiji se hash promenio.
  * @returns {{novi:number, nepromijenjeni:number}}
  */
 export function usisajUFalsifikat(izvori, { put }) {
