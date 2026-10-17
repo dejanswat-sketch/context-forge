@@ -10,6 +10,8 @@
 > **Bez čega radi:** bez zavisnosti, bez interneta.
 > **U portalu:** `http://127.0.0.1:3150/` → tab **Context Forge** (dugmad: Demo, Scenariji, Izveštaj, Testovi).
 
+![Context Forge — demo output](demo.svg)
+
 **Package knowledge for AI agents — with proof of freshness.**
 
 RAG systems rarely fail because of the model. They fail because of the context: 3,000 documents where 40 % are
