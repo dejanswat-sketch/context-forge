@@ -55,19 +55,33 @@ npm test                   # 33 tests, no dependencies, ~1 s
 ```
 
 ```js
-import { usisajFolder } from './src/ingestor.js';
-import { napraviPaket, upisiPaket } from './src/packer.js';
-import { napisiIzvestaj } from './src/report.js';
+import { ingestor, deduper, freshness, packer } from 'context-forge';
 
-const izvori = usisajFolder('D:/firma/dokumenti');     // .md .txt .json .csv .yml
-const paket  = napraviPaket(izvori);                   // dedupe + conflicts + freshness inline
-upisiPaket(paket, './packs');                          // pack.json + pack.md (citations) + .sha256
-const r = napisiIzvestaj(paket, './packs');            // report.md + report.json + .sha256
-console.log(r.sabrano.rizik);                          // { bodovi, nivo, clanovi }
+const sources = ingestor('/data/knowledge');          // .md .txt .json .csv .yml
+const clean   = deduper(sources);                     // duplicates removed, findings kept
+const checked = freshness(clean, { ttlDana: 90 });    // age, conflicts, PII flags
+const pack    = packer(checked, { pitanje: 'what is the refund price?' });
 ```
 
-Feed `pack.json` (or `pack.md`) to your RAG indexer. Anything that is not in the pack is listed in `izbaceno`
-**with the reason** — never silently dropped.
+Feed the resulting `pack.json` (or `pack.md`) to your RAG indexer. Anything that is not in the pack is listed in
+`izbaceno` **with the reason** — never silently dropped.
+
+<!-- English aliases for the public API are exported from src/index.js as well:
+     buildPack, matchScore, proofLine, summary, loadPolicy, detect, redact, FLAGS.
+     The internals still use Serbian identifiers, because the 50 tests and 7 scenarios
+     assert on those reason strings — renaming them would change observable behaviour.
+     Use the English names; they are the same functions. -->
+
+<details>
+<summary>Prefer the low-level modules?</summary>
+
+```js
+import { usisajFolder } from './src/ingestor.js';
+import { buildPack }   from './src/index.js';       // English alias of napraviPaket
+```
+
+Both surfaces are the same engine. The façade (`src/index.js`) is the stable one.
+</details>
 
 ---
 

@@ -81,3 +81,52 @@ export function packer(provereni, opcije = {}) {
 }
 
 export { napraviPaket, poklapanje, dokazLinija, sazetak, ucitajPolitiku, detektuj, rediguj };
+
+/* --------------------------------------------------------------------------
+   ENGLISH PUBLIC API (17.10.2026).
+
+   The internals still use Serbian identifiers, because the 50 tests and the
+   7 scenarios assert on those reason strings ("osetljivo", "isteklo", ...)
+   and renaming them would change observable behaviour. Instead of a rewrite,
+   the public surface is exposed under English names — the same functions,
+   just the names a reader of this repository expects.
+
+   Import these, not the Serbian originals:
+
+     import { ingestor, deduper, freshness, packer, buildPack, detect, redact }
+       from 'context-forge';
+   -------------------------------------------------------------------------- */
+
+/** Build the knowledge pack (same function as `napraviPaket`). */
+export const buildPack = napraviPaket;
+/** Match score of a chunk against a question. */
+export const matchScore = poklapanje;
+/** The one-line provenance string of a chunk. */
+export const proofLine = dokazLinija;
+/** Summary counters (duplicates, conflicts, freshness buckets). */
+export const summary = sazetak;
+/** Load `policy.json` (freshness rules as data). */
+export const loadPolicy = ucitajPolitiku;
+/** Detect PII and secrets in a text. */
+export const detect = detektuj;
+/** Redact a text before it is logged or reported. */
+export const redact = rediguj;
+
+/** English aliases for the shape of a verified record (documentation only). */
+export const STATUS = Object.freeze({
+  fresh: 'fresh',
+  stale: 'stale',
+  expired: 'expired',
+  unknown: 'unknown',
+});
+
+/** English flag names returned by `freshness()`, mapped to the Serbian values it emits. */
+export const FLAGS = Object.freeze({
+  fresh: 'sveze',
+  expired: 'zastarelo',
+  sensitive: 'osetljivo',
+  noOwner: 'bez-vlasnika',
+  noSource: 'bez-izvora',
+  duplicate: 'duplikat',
+  conflict: 'konflikt',
+});
